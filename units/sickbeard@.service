@@ -1,0 +1,42 @@
+[Unit]
+Description=Sickbeard
+Requires=docker.service
+After=docker.service
+
+[Service]
+# Setup the default environment
+Environment='DOCKER_CONTAINER=%p.%i'
+Environment='DOCKER_IMAGE=needo/sickbeard'
+Environment='SICKBEARD_CONFIG=/srv/docker/sickbeard/instance/%i/config'
+Environment='SICKBEARD_DOWNLOADS=/srv/docker/sickbeard/intance/%i/downloads'
+Environment='SICKBEARD_TV=/srv/docker/sickbeard/intance/%i/downloads'
+
+# Pulling a docker image can take a long time, don't time out.
+TimeoutStartSec=0
+
+# Setup the system
+ExecStartPre=/usr/bin/mkdir -p ${SICKBEARD_CONFIG}
+ExecStartPre=/usr/bin/mkdir -p ${SICKBEARD_DOWNLOADS}
+ExecStartPre=/usr/bin/mkdir -p ${SICKBEARD_TV}
+ExecStartPre=/usr/bin/docker pull ${DOCKER_IMAGE}
+
+# Clean any old containers
+ExecStartPre=-/usr/bin/docker rm ${DOCKER_CONTAINER}
+
+# Start the container
+ExecStart=/usr/bin/bash -c 'docker run --rm --name ${DOCKER_CONTAINER} \
+  ${DOCKER_HOSTNAME} ${DOCKER_NETWORKING} ${DOCKER_PORTMAPS} \
+  ${DOCKER_VOLUMES} \
+  ${SICKBEARD_EDGE_DKROPTS} \
+  -v=${SICKBEARD_CONFIG}:/config \
+  -v=${SICKBEARD_DOWNLOADS}:/downloads \
+  -v=${SICKBEARD_TV}:/tv \
+  -v=/etc/localtime:/etc/localtime:ro \
+  ${DOCKER_IMAGE}'
+
+# Stop the container
+ExecStop=-/usr/bin/docker stop ${DOCKER_CONTAINER}
+
+[Install]
+DefaultInstance=default
+WantedBy=multi-user.target
