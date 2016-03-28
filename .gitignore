@@ -1,0 +1,9 @@
+# Instance configuration and files
+/instance/
+/common/
+
+# Custom units
+/units/custom-*
+/units/[0-9][0-9]-custom-*
+/units/*/custom-*
+/units/*/[0-9][0-9]-custom-*
