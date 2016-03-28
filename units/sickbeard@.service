@@ -8,8 +8,8 @@ After=docker.service
 Environment='DOCKER_CONTAINER=%p.%i'
 Environment='DOCKER_IMAGE=needo/sickbeard'
 Environment='SICKBEARD_CONFIG=/srv/docker/sickbeard/instance/%i/config'
-Environment='SICKBEARD_DOWNLOADS=/srv/docker/sickbeard/intance/%i/downloads'
-Environment='SICKBEARD_TV=/srv/docker/sickbeard/intance/%i/downloads'
+Environment='SICKBEARD_DOWNLOADS=/srv/docker/sickbeard/instance/%i/downloads'
+Environment='SICKBEARD_TV=/srv/docker/sickbeard/instance/%i/downloads'
 
 # Pulling a docker image can take a long time, don't time out.
 TimeoutStartSec=0
